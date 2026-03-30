@@ -43,7 +43,7 @@ $csrfDeleteToken = generate_csrf_token('delete_article');
             </div>
         </div>
 
-        <h1 style="margin:0 0 16px 0;">Liste des articles</h1>
+        <h1 style="margin:0 0 16px 0;">Administration — Gestion des articles</h1>
 
         <div class="card">
             <h2 style="margin-top:0;">Articles</h2>

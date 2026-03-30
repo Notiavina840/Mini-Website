@@ -84,7 +84,7 @@ $dateModified = $article['updated_at'] ?? $datePublished;
     <header class="site-header">
         <div class="container">
             <a class="breadcrumb" href="/articles">← Retour aux articles</a>
-            <h1><?php echo htmlspecialchars($title); ?></h1>
+            <h1><?php echo htmlspecialchars($title . ' — guerre en Iran'); ?></h1>
             <?php if ($article && !empty($article['resume'])): ?>
                 <p class="lede"><?php echo htmlspecialchars($article['resume']); ?></p>
             <?php endif; ?>

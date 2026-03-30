@@ -65,7 +65,7 @@ $csrfToken = generate_csrf_token('edit_article');
             </div>
         </div>
 
-        <h1 style="margin:0 0 16px 0;">Modifier un article</h1>
+        <h1 style="margin:0 0 16px 0;">Administration — Modifier un article</h1>
 
         <div class="card">
             <h2 style="margin-top:0;">Édition</h2>

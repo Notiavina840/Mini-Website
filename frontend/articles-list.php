@@ -46,7 +46,7 @@ $canonical = 'http://' . $host . $uri;
 <body>
     <header class="site-header">
         <div class="container">
-            <h1>Articles</h1>
+            <h1>Articles sur la guerre en Iran</h1>
             <p class="lede">Actualités et analyses publiées récemment.</p>
         </div>
     </header>

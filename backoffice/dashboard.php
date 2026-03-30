@@ -29,7 +29,7 @@ $mockArticles = [
             </div>
         </div>
 
-        <h1 style="margin:0 0 16px 0;">Dashboard</h1>
+        <h1 style="margin:0 0 16px 0;">Administration — Dashboard</h1>
 
         <div class="card">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">

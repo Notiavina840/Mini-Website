@@ -66,7 +66,7 @@ $csrfToken = generate_csrf_token('add_article');
             </div>
         </div>
 
-        <h1 style="margin:0 0 16px 0;">Ajouter un article</h1>
+        <h1 style="margin:0 0 16px 0;">Administration — Ajouter un article</h1>
 
         <div class="card">
             <h2 style="margin-top:0;">Nouveau contenu</h2>
