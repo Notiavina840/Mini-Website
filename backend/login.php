@@ -6,12 +6,13 @@ session_start();
 
 // --------------------------------------------------
 // 2) Configuration de la connexion MySQL
-//    À adapter selon votre environnement
+//    Compatible local + Docker via variables d'environnement
 // --------------------------------------------------
-$dbHost = 'localhost';
-$dbName = 'mini_website';
-$dbUser = 'root';
-$dbPass = '';
+$dbHost = getenv('DB_HOST') ?: 'localhost';
+$dbName = getenv('DB_NAME') ?: 'mini_website';
+$dbUser = getenv('DB_USER') ?: 'root';
+$dbPass = getenv('DB_PASS');
+$dbPass = $dbPass === false ? '' : $dbPass;
 
 // Variable pour stocker les messages d'erreur
 $errorMessage = '';
