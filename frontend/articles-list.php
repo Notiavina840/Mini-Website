@@ -51,7 +51,7 @@ $canonical = 'http://' . $host . $uri;
         </div>
     </header>
 
-    <main class="container">
+    <main class="container" role="main">
         <?php if ($errorMessage !== ''): ?>
             <div class="alert alert-error"><?php echo htmlspecialchars($errorMessage); ?></div>
         <?php endif; ?>
@@ -61,6 +61,7 @@ $canonical = 'http://' . $host . $uri;
         <?php endif; ?>
 
         <div class="grid">
+            <?php $isFirstCard = true; ?>
             <?php foreach ($articles as $article): ?>
                 <?php
                     $title = $article['titre'] ?? 'Article';
@@ -71,11 +72,18 @@ $canonical = 'http://' . $host . $uri;
                 ?>
                 <article class="card">
                     <?php if ($image !== ''): ?>
+                        <?php
+                            $imageAlt = $resume !== '' ? $resume : $title;
+                            $loadingAttr = $isFirstCard ? '' : ' loading="lazy"';
+                            $fetchAttr = $isFirstCard ? ' fetchpriority="high"' : '';
+                        ?>
                         <a href="<?php echo htmlspecialchars($detailUrl); ?>" class="card-image">
                             <img
                                 src="/uploads/<?php echo htmlspecialchars($image); ?>"
-                                alt="<?php echo htmlspecialchars($resume !== '' ? $resume : $title); ?>"
-                                loading="lazy"
+                                alt="<?php echo htmlspecialchars($imageAlt); ?>"
+                                width="640"
+                                height="360"
+                                <?php echo $fetchAttr; ?><?php echo $loadingAttr; ?>
                             >
                         </a>
                     <?php endif; ?>
@@ -87,6 +95,7 @@ $canonical = 'http://' . $host . $uri;
                         <a class="card-link" href="<?php echo htmlspecialchars($detailUrl); ?>">Lire l'article</a>
                     </div>
                 </article>
+                <?php $isFirstCard = false; ?>
             <?php endforeach; ?>
         </div>
     </main>

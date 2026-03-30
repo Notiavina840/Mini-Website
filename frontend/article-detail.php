@@ -91,13 +91,20 @@ $dateModified = $article['updated_at'] ?? $datePublished;
         </div>
     </header>
 
-    <main class="container">
+    <main class="container" role="main">
         <?php if ($errorMessage !== ''): ?>
             <div class="alert alert-error"><?php echo htmlspecialchars($errorMessage); ?></div>
         <?php elseif ($article): ?>
             <?php if ($image !== ''): ?>
                 <figure class="hero">
-                    <img src="/uploads/<?php echo htmlspecialchars($image); ?>" alt="<?php echo htmlspecialchars($metaDescription !== '' ? $metaDescription : $title); ?>">
+                    <img
+                        src="/uploads/<?php echo htmlspecialchars($image); ?>"
+                        alt="<?php echo htmlspecialchars($metaDescription !== '' ? $metaDescription : $title); ?>"
+                        width="1200"
+                        height="675"
+                        fetchpriority="high"
+                        loading="eager"
+                    >
                 </figure>
             <?php endif; ?>
 
