@@ -1,8 +1,6 @@
+<?php require_once __DIR__ . '/includes/auth_check.php'; ?>
 <?php
 require_once __DIR__ . '/includes/security.php';
-
-// Vérifier l'authentification
-require_authentication();
 
 $errors = [];
 $successMessage = '';
