@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /backoffice/
+Disallow: /admin/
+Disallow: /login.php
+Sitemap: http://localhost:8080/sitemap.xml

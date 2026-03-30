@@ -13,6 +13,9 @@ RewriteRule ^articles/?$ frontend/articles-list.php [L,QSA]
 # Article detail by slug
 RewriteRule ^articles/([^/]+)/?$ frontend/article-detail.php?slug=$1 [L,QSA]
 
+# Sitemap routing
+RewriteRule ^sitemap\.xml$ sitemap.php [L,QSA]
+
 # Fallback: serve existing files/directories; otherwise leave to default
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
