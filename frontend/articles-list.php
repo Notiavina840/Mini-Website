@@ -39,8 +39,8 @@ $canonical = 'http://' . $host . $uri;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index, follow">
     <title>Articles | Mini Website</title>
-    <meta name="description" content="Découvrez les derniers articles publiés.">
-    <link rel="canonical" href="<?php echo htmlspecialchars($canonical); ?>">
+    <meta name="description" content="Suivez l'actualité et l'histoire du conflit en Iran : chronologie, enjeux géopolitiques, acteurs clés et conséquences humanitaires en temps réel.">
+    <link rel="canonical" href="http://localhost:8080/">
     <link rel="stylesheet" href="/assets/css/front.css">
 </head>
 <body>

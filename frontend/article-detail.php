@@ -61,8 +61,8 @@ $dateModified = $article['updated_at'] ?? $datePublished;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index, follow">
     <title><?php echo htmlspecialchars($metaTitle); ?></title>
-    <meta name="description" content="<?php echo htmlspecialchars($metaDescription); ?>">
-    <link rel="canonical" href="<?php echo htmlspecialchars($canonical); ?>">
+    <meta name="description" content="<?php echo htmlspecialchars(substr($metaDescription, 0, 155)); ?>">
+    <link rel="canonical" href="<?php echo htmlspecialchars('http://localhost:8080/articles/' . $slug); ?>">
     <link rel="stylesheet" href="/assets/css/front.css">
     <?php if ($article): ?>
     <script type="application/ld+json">
