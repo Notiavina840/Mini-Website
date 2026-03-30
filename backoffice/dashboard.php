@@ -54,7 +54,7 @@ $mockArticles = [
                             <td>
                                 <img
                                     src="../uploads/<?php echo htmlspecialchars($article['image']); ?>"
-                                    alt="<?php echo htmlspecialchars($article['titre']); ?>"
+                                    alt="<?php echo htmlspecialchars('Aperçu de l\'article : ' . $article['titre']); ?>"
                                     style="max-width: 96px; height: auto; border-radius: 8px; border: 1px solid #e5e7eb;"
                                 >
                             </td>

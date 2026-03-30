@@ -23,6 +23,7 @@ try {
     $stmt = $pdo->query("SELECT id, titre, resume, slug, image, meta_title, meta_description, created_at FROM articles ORDER BY created_at DESC");
     $articles = $stmt->fetchAll();
 } catch (Throwable $e) {
+    http_response_code(500);
     $errorMessage = "Impossible de charger les articles. Vérifiez la connexion à la base de données.";
 }
 
@@ -73,7 +74,7 @@ $canonical = 'http://' . $host . $uri;
                         <a href="<?php echo htmlspecialchars($detailUrl); ?>" class="card-image">
                             <img
                                 src="/uploads/<?php echo htmlspecialchars($image); ?>"
-                                alt="<?php echo htmlspecialchars($title); ?>"
+                                alt="<?php echo htmlspecialchars($resume !== '' ? $resume : $title); ?>"
                                 loading="lazy"
                             >
                         </a>

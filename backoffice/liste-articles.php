@@ -79,7 +79,7 @@ $csrfDeleteToken = generate_csrf_token('delete_article');
                         <td>
                             <img
                                 src="../uploads/image1.jpg"
-                                alt="Article de démonstration"
+                                alt="Aperçu de l'article : Article de démonstration"
                                 style="max-width: 96px; height: auto; border-radius: 8px; border: 1px solid #e5e7eb;"
                             >
                         </td>

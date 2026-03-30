@@ -45,8 +45,10 @@ $uri = strtok($_SERVER['REQUEST_URI'] ?? ('/articles/' . $slug), '?');
 $canonical = 'http://' . $host . $uri;
 
 $title = $article['titre'] ?? 'Article';
-$metaTitle = $article['meta_title'] ?: $title;
-$metaDescription = $article['meta_description'] ?: ($article['resume'] ?? '');
+$metaTitle = $article && !empty($article['meta_title']) ? $article['meta_title'] : $title;
+$metaDescription = $article && !empty($article['meta_description'])
+    ? $article['meta_description']
+    : ($article['resume'] ?? '');
 $image = $article['image'] ?? '';
 $contentHtml = $article['contenu'] ?? ($article['content'] ?? '');
 $datePublished = $article['created_at'] ?? '';
@@ -83,7 +85,7 @@ $dateModified = $article['updated_at'] ?? $datePublished;
         <div class="container">
             <a class="breadcrumb" href="/articles">← Retour aux articles</a>
             <h1><?php echo htmlspecialchars($title); ?></h1>
-            <?php if (!empty($article['resume'])): ?>
+            <?php if ($article && !empty($article['resume'])): ?>
                 <p class="lede"><?php echo htmlspecialchars($article['resume']); ?></p>
             <?php endif; ?>
         </div>
@@ -95,7 +97,7 @@ $dateModified = $article['updated_at'] ?? $datePublished;
         <?php elseif ($article): ?>
             <?php if ($image !== ''): ?>
                 <figure class="hero">
-                    <img src="/uploads/<?php echo htmlspecialchars($image); ?>" alt="<?php echo htmlspecialchars($title); ?>">
+                    <img src="/uploads/<?php echo htmlspecialchars($image); ?>" alt="<?php echo htmlspecialchars($metaDescription !== '' ? $metaDescription : $title); ?>">
                 </figure>
             <?php endif; ?>
 
