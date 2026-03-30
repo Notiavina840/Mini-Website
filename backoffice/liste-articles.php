@@ -43,8 +43,6 @@ $csrfDeleteToken = generate_csrf_token('delete_article');
             </div>
         </div>
 
-        <h1 style="margin:0 0 16px 0;">Liste des articles</h1>
-
         <div class="card">
             <h2 style="margin-top:0;">Articles</h2>
 
@@ -76,13 +74,7 @@ $csrfDeleteToken = generate_csrf_token('delete_article');
                     <tr>
                         <td>Article de démonstration</td>
                         <td>Résumé court</td>
-                        <td>
-                            <img
-                                src="../uploads/image1.jpg"
-                                alt="Article de démonstration"
-                                style="max-width: 96px; height: auto; border-radius: 8px; border: 1px solid #e5e7eb;"
-                            >
-                        </td>
+                        <td>demo.jpg</td>
                         <td>
                             <div class="actions-row">
                                 <a class="button" href="modifier-article.php">Modifier</a>

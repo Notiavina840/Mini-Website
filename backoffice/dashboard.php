@@ -5,8 +5,8 @@ require_once __DIR__ . '/includes/security.php';
 require_authentication();
 
 $mockArticles = [
-    ['titre' => 'Nouveau thème', 'resume' => 'Présentation du nouveau design.', 'image' => 'image1.jpg'],
-    ['titre' => 'Guide auteur', 'resume' => 'Comment publier un article.', 'image' => 'image2.jpg'],
+    ['titre' => 'Nouveau thème', 'resume' => 'Présentation du nouveau design.', 'image' => 'hero.jpg'],
+    ['titre' => 'Guide auteur', 'resume' => 'Comment publier un article.', 'image' => 'guide.png'],
 ];
 ?>
 <!DOCTYPE html>
@@ -58,6 +58,7 @@ $mockArticles = [
                                     style="max-width: 96px; height: auto; border-radius: 8px; border: 1px solid #e5e7eb;"
                                 >
                             </td>
+                            <td><?php echo htmlspecialchars($article['image']); ?></td>
                             <td>
                                 <div class="actions-row">
                                     <a class="button" href="modifier-article.php">Modifier</a>
