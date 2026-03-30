@@ -13,9 +13,9 @@ if (!isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Ajouter un article</title>
 </head>
 <body>
-    <h1>Dashboard</h1>
+    <h1>Ajouter un article</h1>
 </body>
 </html>
