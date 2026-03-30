@@ -1,8 +1,10 @@
 <?php
+require_once __DIR__ . '/includes/security.php';
+
 // --------------------------------------------------
-// 1) Démarrer la session PHP
+// 1) Démarrer la session PHP avec paramètres sécurisés
 // --------------------------------------------------
-session_start();
+start_secure_session();
 
 // --------------------------------------------------
 // 2) Configuration de la connexion MySQL
@@ -21,7 +23,7 @@ $errorMessage = '';
 // 3) Si l'utilisateur est déjà connecté, redirection
 // --------------------------------------------------
 if (isset($_SESSION['user_id'])) {
-    header('Location: ../dashboard.php');
+    header('Location: dashboard.php');
     exit;
 }
 
@@ -29,6 +31,7 @@ if (isset($_SESSION['user_id'])) {
 // 4) Traitement du formulaire lors de l'envoi en POST
 // --------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verify_csrf_token($_POST['csrf_token'] ?? '', 'login_form');
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
@@ -62,20 +65,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             //    - password_verify() pour mot de passe hashé
             //    - comparaison simple en secours si non hashé
             // --------------------------------------------------
-            $isValidPassword = $user && (
-                password_verify($password, $user['password']) ||
-                $password === $user['password']
-            );
+            $isValidPassword = $user && password_verify($password, $user['password']);
 
             if ($isValidPassword) {
                 // --------------------------------------------------
                 // 8) Authentification réussie : enregistrer la session
                 // --------------------------------------------------
+                regenerate_session_id_if_needed();
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
 
                 // Redirection vers le tableau de bord
-                header('Location: ../dashboard.php');
+                header('Location: dashboard.php');
                 exit;
             }
 
@@ -89,12 +90,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+// Après traitement, régénérer un token CSRF pour l'affichage du formulaire
+$csrfToken = generate_csrf_token('login_form');
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>Connexion</title>
     <style>
         body {
@@ -191,6 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 required
             >
 
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken); ?>">
             <button type="submit">Se connecter</button>
         </form>
     </div>

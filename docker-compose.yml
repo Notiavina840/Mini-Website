@@ -23,8 +23,9 @@ services:
     image: mysql:8.0
     container_name: mini_website_db
     restart: unless-stopped
-    ports:
-      - "3307:3306"
+    # Expose MySQL only internally; map externally if you need local SQL client access.
+    # ports:
+    #   - "3307:3306"
     environment:
       MYSQL_DATABASE: mini_website
       MYSQL_USER: mini_user

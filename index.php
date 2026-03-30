@@ -1,3 +1,3 @@
 <?php
-header('Location: backend/login.php');
+header('Location: backoffice/login.php');
 exit;

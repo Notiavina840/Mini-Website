@@ -1,6 +1,8 @@
 <?php
+require_once __DIR__ . '/includes/security.php';
+
 // Démarrer la session actuelle pour pouvoir la détruire
-session_start();
+start_secure_session();
 
 // Vider toutes les variables de session
 $_SESSION = [];
