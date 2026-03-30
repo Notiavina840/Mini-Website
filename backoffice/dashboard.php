@@ -29,6 +29,8 @@ $mockArticles = [
             </div>
         </div>
 
+        <h1 style="margin:0 0 16px 0;">Dashboard</h1>
+
         <div class="card">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
                 <h2 style="margin:0;">Articles</h2>
@@ -49,6 +51,13 @@ $mockArticles = [
                         <tr>
                             <td><?php echo htmlspecialchars($article['titre']); ?></td>
                             <td><?php echo htmlspecialchars($article['resume']); ?></td>
+                            <td>
+                                <img
+                                    src="../uploads/<?php echo htmlspecialchars($article['image']); ?>"
+                                    alt="<?php echo htmlspecialchars($article['titre']); ?>"
+                                    style="max-width: 96px; height: auto; border-radius: 8px; border: 1px solid #e5e7eb;"
+                                >
+                            </td>
                             <td><?php echo htmlspecialchars($article['image']); ?></td>
                             <td>
                                 <div class="actions-row">

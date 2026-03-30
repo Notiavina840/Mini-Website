@@ -1,0 +1,19 @@
+# URL rewriting for frontoffice
+Options +FollowSymLinks
+RewriteEngine On
+
+# Force slash-trailing consistency (optional)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^articles$ /articles/ [L,R=301]
+
+# List of articles
+RewriteRule ^articles/?$ frontend/articles-list.php [L,QSA]
+
+# Article detail by slug
+RewriteRule ^articles/([^/]+)/?$ frontend/article-detail.php?slug=$1 [L,QSA]
+
+# Fallback: serve existing files/directories; otherwise leave to default
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+# You can add a catch-all here if needed, but we leave other routes untouched
