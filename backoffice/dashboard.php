@@ -2,10 +2,30 @@
 <?php
 require_once __DIR__ . '/includes/security.php';
 
-$mockArticles = [
-    ['titre' => 'Nouveau thème', 'resume' => 'Présentation du nouveau design.', 'image' => 'image1.jpg'],
-    ['titre' => 'Guide auteur', 'resume' => 'Comment publier un article.', 'image' => 'image2.jpg'],
-];
+$mockArticles = [];
+
+try {
+    $dbHost = getenv('DB_HOST') ?: 'localhost';
+    $dbName = getenv('DB_NAME') ?: 'mini_website';
+    $dbUser = getenv('DB_USER') ?: 'root';
+    $dbPass = getenv('DB_PASS');
+    $dbPass = $dbPass === false ? '' : $dbPass;
+
+    $pdo = new PDO(
+        "mysql:host={$dbHost};dbname={$dbName};charset=utf8mb4",
+        $dbUser,
+        $dbPass,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]
+    );
+
+    $stmt = $pdo->query('SELECT id, titre, resume, image FROM articles ORDER BY created_at DESC');
+    $mockArticles = $stmt->fetchAll();
+} catch (Throwable $e) {
+    error_log('[dashboard] DB error: ' . $e->getMessage());
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -58,7 +78,7 @@ $mockArticles = [
                             </td>
                             <td>
                                 <div class="actions-row">
-                                    <a class="button" href="modifier-article.php">Modifier</a>
+                                    <a class="button" href="modifier-article.php?id=<?php echo $article['id']; ?>">Modifier</a>
                                     <button class="button-danger" type="button">Supprimer</button>
                                 </div>
                             </td>

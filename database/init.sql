@@ -29,11 +29,13 @@ CREATE TABLE articles (
     titre VARCHAR(255) NOT NULL,
     slug VARCHAR(255) NOT NULL UNIQUE,
     resume TEXT,
+    meta_title VARCHAR(255),
+    meta_description VARCHAR(255),
     contenu LONGTEXT,
     image VARCHAR(255),
     categorie VARCHAR(100),
-    date_publication DATETIME DEFAULT CURRENT_TIMESTAMP,
-    date_modification DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     statut ENUM('publié', 'brouillon') DEFAULT 'publié',
     auteur_id INT,
     CONSTRAINT fk_articles_utilisateur FOREIGN KEY (auteur_id) REFERENCES utilisateurs(id) ON DELETE SET NULL ON UPDATE CASCADE
@@ -43,7 +45,7 @@ CREATE TABLE articles (
 INSERT INTO utilisateurs (username, password, email, role)
 VALUES (
     'admin',
-    '$2y$10$2LmnbXTdhzufiRS4T6cW2.M/hQvPk3jfbQ3VIyN2gN5jsgPp9iSR6', -- password_hash('admin', PASSWORD_DEFAULT) sample
+    '$2y$10$BtIuoj4kuksCN.NswAucR.XZrd9w1bARbIOXlRJCUO5ElK8k4p7uO', -- password_hash('admin', PASSWORD_DEFAULT) - password: admin
     'admin@example.com',
     'admin'
 ) ON DUPLICATE KEY UPDATE username = username;

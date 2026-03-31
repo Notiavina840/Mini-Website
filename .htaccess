@@ -1,4 +1,5 @@
 Options +FollowSymlinks
+DirectoryIndex frontoffice/index.php index.php
 RewriteEngine On
 
 # Ne pas réécrire si le fichier ou le dossier existe
@@ -6,20 +7,24 @@ RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# Page d'accueil
-RewriteRule ^$ index.php [L]
+# Page d'accueil (listing)
+RewriteRule ^$ frontoffice/index.php [L]
 
 # Liste des articles (compatibilité existante)
-RewriteRule ^articles/?$ frontend/articles-list.php [L,QSA]
+RewriteRule ^articles/?$ frontoffice/index.php [L,QSA]
 
-# Détail article URL propre
-RewriteRule ^article/([a-z0-9\-]+)/?$ article.php?slug=$1 [L,QSA]
+# Détail article URL propre (accepte majuscules et underscores)
+RewriteRule ^article/([A-Za-z0-9_-]+)/?$ frontoffice/article.php?slug=$1 [L,QSA]
 
-# Catégorie (si utilisée)
-RewriteRule ^categorie/([a-z0-9\-]+)/?$ categorie.php?slug=$1 [L,QSA]
+# Catégorie
+RewriteRule ^categorie/([A-Za-z0-9_-]+)/?$ frontoffice/categorie.php?slug=$1 [L,QSA]
 
 # Compatibilité : ancien schéma /articles/{slug}
-RewriteRule ^articles/([^/]+)/?$ frontend/article-detail.php?slug=$1 [L,QSA]
+RewriteRule ^articles/([^/]+)/?$ frontoffice/article.php?slug=$1 [L,QSA]
+
+# Compatibilité liens frontoffice style modules-<id>-<cat>.html
+# Exemple : /dossier/actus-module-123-45.html -> frontoffice/article.php?slug=123&cat=45
+RewriteRule ^/?.*/?.*-([_a-z0-9]+)-([_a-z0-9]+)\.html$ frontoffice/article.php?slug=$1&idcat=$2 [L,QSA]
 
 # Sitemap
 RewriteRule ^sitemap\.xml$ sitemap.php [L,QSA]

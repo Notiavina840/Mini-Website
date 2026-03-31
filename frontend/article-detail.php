@@ -25,7 +25,8 @@ if ($slug === '') {
             ]
         );
 
-        $stmt = $pdo->prepare("SELECT id, titre, resume, contenu, content, slug, image, meta_title, meta_description, created_at, updated_at FROM articles WHERE slug = :slug LIMIT 1");
+        // Fetch article; alias contenu as content to satisfy both legacy and new fields
+        $stmt = $pdo->prepare("SELECT id, titre, resume, contenu, contenu AS content, slug, image, meta_title, meta_description, created_at, updated_at FROM articles WHERE slug = :slug LIMIT 1");
         $stmt->execute(['slug' => $slug]);
         $article = $stmt->fetch();
 
@@ -36,6 +37,7 @@ if ($slug === '') {
     } catch (Throwable $e) {
         http_response_code(500);
         $errorMessage = 'Erreur serveur lors du chargement de l\'article.';
+        error_log('[article-detail] DB error: ' . $e->getMessage());
     }
 }
 

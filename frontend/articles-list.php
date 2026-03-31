@@ -25,6 +25,7 @@ try {
 } catch (Throwable $e) {
     http_response_code(500);
     $errorMessage = "Impossible de charger les articles. Vérifiez la connexion à la base de données.";
+    error_log('[articles-list] DB error: ' . $e->getMessage());
 }
 
 // Build canonical from current request
