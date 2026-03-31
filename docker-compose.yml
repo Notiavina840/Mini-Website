@@ -1,5 +1,5 @@
 services:
-  site:
+  web:
     build:
       context: .
       dockerfile: Dockerfile
@@ -14,7 +14,7 @@ services:
       DB_PASS: mini_password
     volumes:
       - ./:/var/www/html
-      - uploads_data:/var/www/html/uploads
+      - ./uploads:/var/www/html/uploads
     depends_on:
       db:
         condition: service_healthy
@@ -23,9 +23,6 @@ services:
     image: mysql:8.0
     container_name: mini_website_db
     restart: unless-stopped
-    # Expose MySQL only internally; map externally if you need local SQL client access.
-    # ports:
-    #   - "3307:3306"
     environment:
       MYSQL_DATABASE: mini_website
       MYSQL_USER: mini_user
@@ -34,7 +31,7 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     volumes:
       - db_data:/var/lib/mysql
-      - ./doc/create_test_user.sql:/docker-entrypoint-initdb.d/01-create_test_user.sql:ro
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h localhost -proot || exit 1"]
       interval: 10s
@@ -42,6 +39,19 @@ services:
       retries: 10
       start_period: 20s
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: mini_website_pma
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PMA_HOST: db
+      PMA_USER: mini_user
+      PMA_PASSWORD: mini_password
+    ports:
+      - "8081:80"
+
 volumes:
   db_data:
-  uploads_data:

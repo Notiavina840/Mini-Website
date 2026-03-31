@@ -1,13 +1,11 @@
 <?php
-require_once __DIR__ . '/includes/security.php';
+// Déconnexion sécurisée
+session_start(); // 1) accéder à la session active
 
-// Démarrer la session actuelle pour pouvoir la détruire
-start_secure_session();
-
-// Vider toutes les variables de session
+// 2) Vider les données de session côté serveur
 $_SESSION = [];
 
-// Supprimer le cookie de session s'il existe
+// 3) Supprimer le cookie de session côté client si utilisé
 if (ini_get('session.use_cookies')) {
     $params = session_get_cookie_params();
     setcookie(
@@ -21,9 +19,11 @@ if (ini_get('session.use_cookies')) {
     );
 }
 
-// Détruire complètement la session
+// 4) Détruire la session côté serveur
 session_destroy();
 
-// Rediriger l'utilisateur vers la page de connexion
+// 5) Rediriger vers la page de connexion
 header('Location: login.php');
-exit;
+
+// 6) Stopper l'exécution
+exit();

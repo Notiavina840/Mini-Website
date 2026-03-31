@@ -25,7 +25,8 @@ if ($slug === '') {
             ]
         );
 
-        $stmt = $pdo->prepare("SELECT id, titre, resume, contenu, content, slug, image, meta_title, meta_description, created_at, updated_at FROM articles WHERE slug = :slug LIMIT 1");
+        // Fetch article; alias contenu as content to satisfy both legacy and new fields
+        $stmt = $pdo->prepare("SELECT id, titre, resume, contenu, contenu AS content, slug, image, meta_title, meta_description, created_at, updated_at FROM articles WHERE slug = :slug LIMIT 1");
         $stmt->execute(['slug' => $slug]);
         $article = $stmt->fetch();
 
@@ -36,6 +37,7 @@ if ($slug === '') {
     } catch (Throwable $e) {
         http_response_code(500);
         $errorMessage = 'Erreur serveur lors du chargement de l\'article.';
+        error_log('[article-detail] DB error: ' . $e->getMessage());
     }
 }
 
@@ -45,8 +47,10 @@ $uri = strtok($_SERVER['REQUEST_URI'] ?? ('/articles/' . $slug), '?');
 $canonical = 'http://' . $host . $uri;
 
 $title = $article['titre'] ?? 'Article';
-$metaTitle = $article['meta_title'] ?: $title;
-$metaDescription = $article['meta_description'] ?: ($article['resume'] ?? '');
+$metaTitle = $article && !empty($article['meta_title']) ? $article['meta_title'] : $title;
+$metaDescription = $article && !empty($article['meta_description'])
+    ? $article['meta_description']
+    : ($article['resume'] ?? '');
 $image = $article['image'] ?? '';
 $contentHtml = $article['contenu'] ?? ($article['content'] ?? '');
 $datePublished = $article['created_at'] ?? '';
@@ -59,8 +63,8 @@ $dateModified = $article['updated_at'] ?? $datePublished;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index, follow">
     <title><?php echo htmlspecialchars($metaTitle); ?></title>
-    <meta name="description" content="<?php echo htmlspecialchars($metaDescription); ?>">
-    <link rel="canonical" href="<?php echo htmlspecialchars($canonical); ?>">
+    <meta name="description" content="<?php echo htmlspecialchars(substr($metaDescription, 0, 155)); ?>">
+    <link rel="canonical" href="<?php echo htmlspecialchars('http://localhost:8080/articles/' . $slug); ?>">
     <link rel="stylesheet" href="/assets/css/front.css">
     <?php if ($article): ?>
     <script type="application/ld+json">
@@ -82,20 +86,27 @@ $dateModified = $article['updated_at'] ?? $datePublished;
     <header class="site-header">
         <div class="container">
             <a class="breadcrumb" href="/articles">← Retour aux articles</a>
-            <h1><?php echo htmlspecialchars($title); ?></h1>
-            <?php if (!empty($article['resume'])): ?>
+            <h1><?php echo htmlspecialchars($title . ' — guerre en Iran'); ?></h1>
+            <?php if ($article && !empty($article['resume'])): ?>
                 <p class="lede"><?php echo htmlspecialchars($article['resume']); ?></p>
             <?php endif; ?>
         </div>
     </header>
 
-    <main class="container">
+    <main class="container" role="main">
         <?php if ($errorMessage !== ''): ?>
             <div class="alert alert-error"><?php echo htmlspecialchars($errorMessage); ?></div>
         <?php elseif ($article): ?>
             <?php if ($image !== ''): ?>
                 <figure class="hero">
-                    <img src="/uploads/<?php echo htmlspecialchars($image); ?>" alt="<?php echo htmlspecialchars($title); ?>">
+                    <img
+                        src="/uploads/<?php echo htmlspecialchars($image); ?>"
+                        alt="<?php echo htmlspecialchars($metaDescription !== '' ? $metaDescription : $title); ?>"
+                        width="1200"
+                        height="675"
+                        fetchpriority="high"
+                        loading="eager"
+                    >
                 </figure>
             <?php endif; ?>
 

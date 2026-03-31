@@ -1,11 +1,33 @@
+<?php require_once __DIR__ . '/includes/auth_check.php'; ?>
 <?php
 require_once __DIR__ . '/includes/security.php';
 
-// Vérifier l'authentification
-require_authentication();
-
 $errors = [];
 $successMessage = '';
+$categories = [];
+
+try {
+    $dbHost = getenv('DB_HOST') ?: 'localhost';
+    $dbName = getenv('DB_NAME') ?: 'mini_website';
+    $dbUser = getenv('DB_USER') ?: 'root';
+    $dbPass = getenv('DB_PASS');
+    $dbPass = $dbPass === false ? '' : $dbPass;
+
+    $pdo = new PDO(
+        "mysql:host={$dbHost};dbname={$dbName};charset=utf8mb4",
+        $dbUser,
+        $dbPass,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]
+    );
+
+    $stmt = $pdo->query('SELECT id, nom, slug FROM categories ORDER BY nom ASC');
+    $categories = $stmt->fetchAll() ?: [];
+} catch (Throwable $e) {
+    error_log('[backoffice] Erreur catégories: ' . $e->getMessage());
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf_token($_POST['csrf_token'] ?? '', 'add_article');
@@ -13,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
     $summary = trim($_POST['summary'] ?? '');
     $content = trim($_POST['content'] ?? '');
+    $category = trim($_POST['category'] ?? '');
 
     if ($title === '') {
         $errors[] = 'Le titre est obligatoire.';
@@ -39,8 +62,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errors)) {
-        // TODO: Insérer l'article en base (titre, résumé, contenu, nom de fichier éventuel)
-        $successMessage = 'Article valide (simulation). Ajoutez la persistance en base.';
+        try {
+            $dbHost = getenv('DB_HOST') ?: 'localhost';
+            $dbName = getenv('DB_NAME') ?: 'mini_website';
+            $dbUser = getenv('DB_USER') ?: 'root';
+            $dbPass = getenv('DB_PASS');
+            $dbPass = $dbPass === false ? '' : $dbPass;
+
+            $pdo = new PDO(
+                "mysql:host={$dbHost};dbname={$dbName};charset=utf8mb4",
+                $dbUser,
+                $dbPass,
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                ]
+            );
+
+            // Générer un slug unique à partir du titre
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title), '-'));
+            
+            // Vérifier unicité du slug
+            $stmt = $pdo->prepare('SELECT COUNT(*) as count FROM articles WHERE slug = :slug');
+            $stmt->execute(['slug' => $slug]);
+            $result = $stmt->fetch();
+            if ($result['count'] > 0) {
+                $slug = $slug . '-' . time();
+            }
+
+            $image = isset($safeName) ? $safeName : 'image1.jpg';
+            $auteurId = $_SESSION['user_id'] ?? null;
+
+            $stmt = $pdo->prepare(
+                'INSERT INTO articles (titre, slug, resume, contenu, image, categorie, auteur_id) 
+                 VALUES (:titre, :slug, :resume, :contenu, :image, :categorie, :auteur_id)'
+            );
+            $stmt->execute([
+                ':titre' => $title,
+                ':slug' => $slug,
+                ':resume' => $summary,
+                ':contenu' => $content,
+                ':image' => $image,
+                ':categorie' => $category ?: null,
+                ':auteur_id' => $auteurId,
+            ]);
+
+            $successMessage = 'Article créé avec succès !';
+        } catch (Throwable $e) {
+            $errors[] = 'Erreur lors de la création : ' . $e->getMessage();
+        }
     }
 }
 
@@ -65,6 +135,8 @@ $csrfToken = generate_csrf_token('add_article');
                 <a class="button-secondary" href="logout.php">Déconnexion</a>
             </div>
         </div>
+
+        <h1 style="margin:0 0 16px 0;">Administration — Ajouter un article</h1>
 
         <div class="card">
             <h2 style="margin-top:0;">Nouveau contenu</h2>
@@ -92,6 +164,18 @@ $csrfToken = generate_csrf_token('add_article');
                 <div class="form-group">
                     <label class="label" for="summary">Résumé</label>
                     <input class="input" type="text" id="summary" name="summary" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="label" for="category">Catégorie</label>
+                    <select class="input" id="category" name="category">
+                        <option value="">-- Sélectionner une catégorie --</option>
+                        <?php foreach ($categories as $cat): ?>
+                            <option value="<?php echo htmlspecialchars($cat['slug']); ?>">
+                                <?php echo htmlspecialchars($cat['nom']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
 
                 <div class="form-group">

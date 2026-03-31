@@ -1,19 +1,30 @@
-# URL rewriting for frontoffice
-Options +FollowSymLinks
+Options +FollowSymlinks
+DirectoryIndex frontoffice/index.php index.php
 RewriteEngine On
 
-# Force slash-trailing consistency (optional)
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^articles$ /articles/ [L,R=301]
+# Ne pas réécrire si le fichier ou le dossier existe
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
 
-# List of articles
-RewriteRule ^articles/?$ frontend/articles-list.php [L,QSA]
+# Page d'accueil (listing)
+RewriteRule ^$ frontoffice/index.php [L]
 
-# Article detail by slug
-RewriteRule ^articles/([^/]+)/?$ frontend/article-detail.php?slug=$1 [L,QSA]
+# Liste des articles (compatibilité existante)
+RewriteRule ^articles/?$ frontoffice/index.php [L,QSA]
 
-# Fallback: serve existing files/directories; otherwise leave to default
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-# You can add a catch-all here if needed, but we leave other routes untouched
+# Détail article URL propre (accepte majuscules et underscores)
+RewriteRule ^article/([A-Za-z0-9_-]+)/?$ frontoffice/article.php?slug=$1 [L,QSA]
+
+# Catégorie
+RewriteRule ^categorie/([A-Za-z0-9_-]+)/?$ frontoffice/categorie.php?slug=$1 [L,QSA]
+
+# Compatibilité : ancien schéma /articles/{slug}
+RewriteRule ^articles/([^/]+)/?$ frontoffice/article.php?slug=$1 [L,QSA]
+
+# Compatibilité liens frontoffice style modules-<id>-<cat>.html
+# Exemple : /dossier/actus-module-123-45.html -> frontoffice/article.php?slug=123&cat=45
+RewriteRule ^/?.*/?.*-([_a-z0-9]+)-([_a-z0-9]+)\.html$ frontoffice/article.php?slug=$1&idcat=$2 [L,QSA]
+
+# Sitemap
+RewriteRule ^sitemap\.xml$ sitemap.php [L,QSA]
