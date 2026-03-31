@@ -76,6 +76,7 @@ try {
                                     style="max-width: 96px; height: auto; border-radius: 8px; border: 1px solid #e5e7eb;"
                                 >
                             </td>
+                            <td><?php echo htmlspecialchars($article['image']); ?></td>
                             <td>
                                 <div class="actions-row">
                                     <a class="button" href="modifier-article.php?id=<?php echo $article['id']; ?>">Modifier</a>
